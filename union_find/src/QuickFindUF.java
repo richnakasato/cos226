@@ -8,21 +8,22 @@ public class QuickFindUF {
         }
     }
 
+    // this is fast (i.e. quick-find)
     public boolean find(int p, int q) {
         return id[p] == id[q];
     }
 
+    // this is slow (i.e. quick-find == slow-union)
     public void union(int p, int q) {
-        int p_id = id[p];
-        int q_id = id[q];
+        int search_id = id[p];
+        int replace_id = id[q];
         for (int i = 0; i < id.length; i++) {
-            if (id[i] == p_id) {
-                id[i] = q_id;
+            if (id[i] == search_id) {
+                id[i] = replace_id;
             }
         }
     }
 
     public static void main() {
-
     }
 }
