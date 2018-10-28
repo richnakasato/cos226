@@ -14,7 +14,7 @@
  *  open sites (that aren't full) in white, and blocked sites in black,
  *  with with site (0, 0) in the upper left-hand corner.
  *
- **************************************************************************** */   
+ **************************************************************************** */
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
@@ -37,10 +37,10 @@ public class PercolationVisualizer {
         // draw n-by-n grid
         for (int row = 0; row < n; row++) {
             for (int col = 0; col < n; col++) {
-                if (percolation.isFull(row, col)) {
+                if (percolation.isFull(row + 1, col + 1)) {
                     StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                 }
-                else if (percolation.isOpen(row, col)) {
+                else if (percolation.isOpen(row + 1, col + 1)) {
                     StdDraw.setPenColor(StdDraw.WHITE);
                 }
                 else {
@@ -75,7 +75,7 @@ public class PercolationVisualizer {
         while (!in.isEmpty()) {
             int row = in.readInt();
             int col = in.readInt();
-            percolation.open(row, col);
+            percolation.open(row + 1, col + 1);
             draw(percolation, n);
             StdDraw.show();
             StdDraw.pause(DELAY);

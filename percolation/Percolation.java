@@ -48,7 +48,8 @@ public class Percolation {
             if (isTopRow(trueRow)) {
                 connections.union(virtualTopNode, currNode);
             }
-            else if (isBottomRow(trueRow)) {
+            else if (isBottomRow(trueRow)
+                    && isFull(row, col)) {
                 connections.union(virtualBottomNode, currNode);
             }
             if (doConnectUp(trueRow, trueCol)) {
@@ -109,7 +110,6 @@ public class Percolation {
         p.open(3, 1);
         p.open(3, 2);
         boolean perc = p.percolates();
-        return;
     }
 
     // validate construction parameters
