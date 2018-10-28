@@ -32,18 +32,6 @@ public class Percolation {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 grid[row][col] = false;
-                /*
-                if (row == 0) {
-                    int currNode = convertRowColToNode(row, col);
-                    connections.union(virtualTopNode, currNode);
-                }
-                */
-                /*
-                else if (row == size - 1) {
-                    int currNode = convertRowColToNode(row, col);
-                    connections.union(virtualBottomNode, currNode);
-                }
-                */
             }
         }
     }
@@ -57,21 +45,27 @@ public class Percolation {
             grid[trueRow][trueCol] = true;
             openSites += 1;
             int currNode = convertRowColToNode(trueRow, trueCol);
+            if (isTopRow(trueRow)) {
+                connections.union(virtualTopNode, currNode);
+            }
+            else if (isBottomRow(trueRow)) {
+                connections.union(virtualBottomNode, currNode);
+            }
             if (doConnectUp(trueRow, trueCol)) {
                 int upNode = convertRowColToNode(trueRow - 1, trueCol);
-                connections.union(upNode, currNode);
+                connections.union(currNode, upNode);
             }
             if (doConnectLeft(trueRow, trueCol)) {
                 int leftNode = convertRowColToNode(trueRow, trueCol - 1);
-                connections.union(leftNode, currNode);
+                connections.union(currNode, leftNode);
             }
             if (doConnectDown(trueRow, trueCol)) {
                 int downNode = convertRowColToNode(trueRow + 1, trueCol);
-                connections.union(downNode, currNode);
+                connections.union(currNode, downNode);
             }
             if (doConnectRight(trueRow, trueCol)) {
                 int rightNode = convertRowColToNode(trueRow, trueCol + 1);
-                connections.union(rightNode, currNode);
+                connections.union(currNode, rightNode);
             }
         }
     }
@@ -90,7 +84,8 @@ public class Percolation {
         int trueRow = row - 1;
         int trueCol = col - 1;
         int currNode = convertRowColToNode(trueRow, trueCol);
-        return connections.connected(virtualTopNode, currNode);
+        return grid[trueRow][trueCol]
+                && connections.connected(virtualTopNode, currNode);
     }
 
     // return the count of open sites
@@ -108,15 +103,13 @@ public class Percolation {
         Percolation p = new Percolation(3);
         p.open(1, 1);
         p.open(1, 2);
-        p.open(2, 2);
+        p.open(1, 3);
+        p.open(2, 1);
         p.open(2, 3);
-        p.open(3, 3);
-        System.out.println(p.isFull(3, 3));
-        System.out.println(p.isFull(1, 3));
-        int start = p.convertRowColToNode(0, 0);
-        int end = p.convertRowColToNode(2, 2);
-        boolean is = p.connections.connected(start, end);
-        System.out.println("is connected: " + is);
+        p.open(3, 1);
+        p.open(3, 2);
+        boolean perc = p.percolates();
+        return;
     }
 
     // validate construction parameters
@@ -157,5 +150,15 @@ public class Percolation {
     // return true if "rightward" position exists and is open
     private boolean doConnectRight(int row, int col) {
         return col + 1 < size && grid[row][col + 1];
+    }
+
+    // returns true if site is in top row
+    private boolean isTopRow(int row) {
+        return row == 0;
+    }
+
+    // returns true if site is in bottom row
+    private boolean isBottomRow(int row) {
+        return row == size - 1;
     }
 }
