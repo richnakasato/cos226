@@ -14,28 +14,6 @@ import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
-    public class RowCol {
-
-        private int row;         // row
-        private int col;         // col
-
-        // creates a row/col
-        public RowCol(int row, int col) {
-            this.row = row;
-            this.col = col;
-        }
-
-        // gets row
-        public int getRow() {
-            return row;
-        }
-
-        // gets col
-        public int getCol() {
-            return col;
-        }
-    }
-
     private int[] samples;      // used to calculate mean
     private int trials;         // cache number of trials
     private int size;           // cache block edge size

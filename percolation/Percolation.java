@@ -132,7 +132,7 @@ public class Percolation {
     }
 
     // converts "true" row and "true" col to wuqf node
-    public int convertRowColToNode(int row, int col) {
+    private int convertRowColToNode(int row, int col) {
         int nodeOffset = 1;
         return size * row + col + nodeOffset;
     }
