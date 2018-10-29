@@ -14,45 +14,55 @@ import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
-    private int[] samples;      // used to calculate mean
-    private int trials;         // cache number of trials
-    private int size;           // cache block edge size
+    private static final double CON95 = 1.96;   // 95 confidence interval
+    private static final int OFFSET = 1;        // offset
+
+    private final int edgeSize;       // cache block edge size
+    private final double mean;        // mean
+    private final double stddev;      // std dev
+    private final double conlo;       // confidence low
+    private final double conhi;       // confidence hi
 
     // perform trials independ experiments on an n-by-n grid
     public PercolationStats(int n, int trials) {
         validateConstructorArgs(n, trials);
-        samples = new int[trials];
-        this.trials = trials;
-        size = n;
+        double[] samples = new double[trials];
+        edgeSize = n;
         for (int i = 0; i < trials; i++) {
-            samples[i] = runPercolationTrial(n);
+            samples[i] = runPercolationTrial(n) / Math.pow(n, 2);
         }
+        mean = StdStats.mean(samples);
+        stddev = StdStats.stddev(samples);
+        double con = (CON95 * stddev) / Math.sqrt(trials);
+        conlo = mean - con;
+        conhi = mean + con;
     }
 
     // sample mean of percolation threshold
     public double mean() {
-        return StdStats.mean(samples);
+        return mean;
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        return StdStats.stddev(samples);
+        return stddev;
     }
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean() - (1.96 / Math.sqrt(this.trials));
+        return conlo;
     }
 
     // high endpint of 95% confidence interval
     public double confidenceHi() {
-        return mean() + (1.96 / Math.sqrt(this.trials));
+        return conhi;
     }
 
     // test client
     public static void main(String[] args) {
-        PercolationStats ps = new PercolationStats(10, 100);
+        PercolationStats ps = new PercolationStats(2, 10000);
         System.out.println("mean: " + ps.mean());
+        System.out.println("stddev: " + ps.stddev());
         System.out.println("lo: " + ps.confidenceLo());
         System.out.println("hi: " + ps.confidenceHi());
     }
@@ -87,11 +97,11 @@ public class PercolationStats {
 
     // converts node "index" to row
     private int getRowFromIndex(int idx) {
-        return (idx / size) + 1;
+        return (idx / edgeSize) + OFFSET;
     }
 
     // converts node "index" to col
     private int getColFromIndex(int idx) {
-        return (idx % size) + 1;
+        return (idx % edgeSize) + OFFSET;
     }
 }

@@ -13,12 +13,12 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
 
-    private WeightedQuickUnionUF connections;   // connected "sites"
-    private boolean[][] grid;                   // grid of "sites"
-    private int size;                           // cache grid size
-    private int openSites;                      // cache open sites
-    private int virtualTopNode;                 // top virtual connection
-    private int virtualBottomNode;              // bottom virtual connection
+    private final WeightedQuickUnionUF connections;     // connected "sites"
+    private boolean[][] grid;                           // grid of "sites"
+    private final int size;                             // cache grid size
+    private int openSites;                              // cache open sites
+    private final int virtualTopNode;                   // top virtual connection
+    private final int virtualBottomNode;                // bottom virtual connection
 
     // creates grid of booleans of nxn size, initialized to false
     public Percolation(int n) {
