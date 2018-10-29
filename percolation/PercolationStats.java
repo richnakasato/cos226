@@ -10,6 +10,7 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
@@ -35,46 +36,47 @@ public class PercolationStats {
         }
     }
 
-    private int size;           // cache grid size
-    private double numTrials;   // cache number of trials
-    private double mean;        // cache mean
+    private int[] samples;      // used to calculate mean
+    private int trials;         // cache number of trials
+    private int size;           // cache block edge size
 
     // perform trials independ experiments on an n-by-n grid
     public PercolationStats(int n, int trials) {
         validateConstructorArgs(n, trials);
+        samples = new int[trials];
+        this.trials = trials;
         size = n;
-        numTrials = trials;
-        int sumOpenSites = 0;
-        for (int i = 0; i < numTrials; i++) {
-            sumOpenSites += runPercolationTrial();
+        for (int i = 0; i < trials; i++) {
+            samples[i] = runPercolationTrial(n);
         }
-        mean = (double) sumOpenSites / numTrials;
     }
 
     // sample mean of percolation threshold
     public double mean() {
-        return mean;
+        return StdStats.mean(samples);
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        return 0.0;
+        return StdStats.stddev(samples);
     }
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-        return 0.0;
+        return mean() - (1.96 / Math.sqrt(this.trials));
     }
 
     // high endpint of 95% confidence interval
     public double confidenceHi() {
-        return 0.0;
+        return mean() + (1.96 / Math.sqrt(this.trials));
     }
 
     // test client
     public static void main(String[] args) {
         PercolationStats ps = new PercolationStats(10, 100);
         System.out.println("mean: " + ps.mean());
+        System.out.println("lo: " + ps.confidenceLo());
+        System.out.println("hi: " + ps.confidenceHi());
     }
 
     // validates constructor arguments
@@ -85,7 +87,7 @@ public class PercolationStats {
     }
 
     // runs one percolation trial of size n and returns site count
-    private int runPercolationTrial() {
+    private int runPercolationTrial(int size) {
         Percolation perc = new Percolation(size);
 
         int[] nodes = new int[size * size];
@@ -98,8 +100,7 @@ public class PercolationStats {
             int row = getRowFromIndex(nodes[i]);
             int col = getColFromIndex(nodes[i]);
             perc.open(row, col);
-            boolean val = perc.percolates();
-            if (val) {
+            if (perc.percolates()) {
                 break;
             }
         }
