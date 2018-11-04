@@ -35,6 +35,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public void enqueue(Item item) {         // add the item
+        if (item == null) {
+            throw new IllegalArgumentException("item shouldn't be null!");
+        }
         if (isFull()) {
             resizeUp(array.length * GROWTH_FACTOR);
         }
@@ -50,11 +53,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private void resizeDown(int newCapacity) {  // adjust size of internal array
-        Item[] temp = (Item[]) new Object[newCapacity];
-        for (int i = 0; i < size(); ++i) {
-            temp[i] = array[i];
+        if (newCapacity >= INIT_CAPACITY) {
+            Item[] temp = (Item[]) new Object[newCapacity];
+            for (int i = 0; i < size(); ++i) {
+                temp[i] = array[i];
+            }
+            array = temp;
         }
-        array = temp;
     }
 
     public Item dequeue() {                  // remove and return a random item
@@ -86,7 +91,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private class RandomizedQueueIterator implements Iterator<Item> {
 
-        private int[] order = StdRandom.permutation(top);
+        private final int[] order = StdRandom.permutation(top);
         private int curr = 0;
 
         public boolean hasNext() {
@@ -95,12 +100,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         public Item next() {
             if (isEmpty()) {
-                throw new NoSuchElementException("queue is empty!");
+                throw new ArrayIndexOutOfBoundsException("queue is empty!");
             }
             return array[order[curr++]];
         }
 
         public void remove() {
+            throw new UnsupportedOperationException("remove is unsupported!");
         }
     }
 
@@ -123,5 +129,14 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         for (int item : queue) {
             System.out.println(item);
         }
+        queue.isEmpty();
+        queue.size();
+        queue.isEmpty();
+        queue.isEmpty();
+        queue.enqueue(174);
+        queue.dequeue();
+        queue.size();
+        queue.enqueue(674);
+        System.out.println("done");
     }
 }
