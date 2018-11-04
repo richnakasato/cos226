@@ -1,32 +1,127 @@
 /* *****************************************************************************
- *  Name:
- *  Date:
- *  Description:
+ *  Name: richard nakasato
+ *  Date: 11/03/2018
+ *  Description: random queue implementation for week 2
  **************************************************************************** */
 
-public class RandomizedQueue {
+import edu.princeton.cs.algs4.StdRandom;
 
-    public RandomizedQueue() {               // construct an empty randomized queue
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class RandomizedQueue<Item> implements Iterable<Item> {
+
+    private static final int INIT_CAPACITY = 1;
+    private static final int GROWTH_FACTOR = 2;
+    private static final int SHRINK_FACTOR = 4;
+    private static final int INIT_VAL = 0;
+
+    private Item[] array = (Item[]) new Object[INIT_CAPACITY];
+    private int top = INIT_VAL;
+
+    public RandomizedQueue() {               // construct an empty random queue
     }
 
     public boolean isEmpty() {               // is the randomized queue empty?
+        return top == 0;
     }
 
-    public int size() {                      // return the number of items on the randomized queue
+    private boolean isFull() {               // is the randomized queue full?
+        return top == array.length;
+    }
+
+    public int size() {                      // return the number of items
+        return top;
     }
 
     public void enqueue(Item item) {         // add the item
+        if (isFull()) {
+            resizeUp(array.length * GROWTH_FACTOR);
+        }
+        array[top++] = item;
+    }
+
+    private void resizeUp(int newCapacity) {    // adjust size of internal array
+        Item[] temp = (Item[]) new Object[newCapacity];
+        for (int i = 0; i < array.length; ++i) {
+            temp[i] = array[i];
+        }
+        array = temp;
+    }
+
+    private void resizeDown(int newCapacity) {  // adjust size of internal array
+        Item[] temp = (Item[]) new Object[newCapacity];
+        for (int i = 0; i < size(); ++i) {
+            temp[i] = array[i];
+        }
+        array = temp;
     }
 
     public Item dequeue() {                  // remove and return a random item
+        if (isEmpty()) {
+            throw new NoSuchElementException("queue is empty!");
+        }
+        int random = StdRandom.uniform(INIT_VAL, top);
+        Item temp = array[random];
+        if (random != top - 1) {
+            array[random] = array[top - 1];
+        }
+        top--;
+        if (size() == array.length / SHRINK_FACTOR) {
+            resizeDown(array.length / GROWTH_FACTOR);
+        }
+        return temp;
     }
 
-    public Item sample() {                   // return a random item (but do not remove it)
+    public Item sample() {                   // return an unremoved random item
+        if (isEmpty()) {
+            throw new NoSuchElementException("queue is empty!");
+        }
+        return array[StdRandom.uniform(INIT_VAL, top)];
     }
 
-    public Iterator<Item> iterator() {       // return an independent iterator over items in random order
+    public Iterator<Item> iterator() {       // return an iterator
+        return new RandomizedQueueIterator();
+    }
+
+    private class RandomizedQueueIterator implements Iterator<Item> {
+
+        private int[] order = StdRandom.permutation(top);
+        private int curr = 0;
+
+        public boolean hasNext() {
+            return curr < top;
+        }
+
+        public Item next() {
+            if (isEmpty()) {
+                throw new NoSuchElementException("queue is empty!");
+            }
+            return array[order[curr++]];
+        }
+
+        public void remove() {
+        }
     }
 
     public static void main(String[] args) { // unit testing (optional)
+        int n = 25;
+        RandomizedQueue<Integer> queue = new RandomizedQueue<>();
+        for (int i = 0; i < n; ++i) {
+            queue.enqueue(i + 1);
+        }
+        int sum = n * (n + 1) / 2;
+        for (int i = 0; i < n; ++i) {
+            sum -= queue.dequeue();
+        }
+        if (sum != 0) {
+            throw new RuntimeException("sum is not 0!");
+        }
+        for (int i = 0; i < n; ++i) {
+            queue.enqueue(i + 1);
+        }
+        for (int item : queue) {
+            System.out.println(item);
+        }
     }
 }
