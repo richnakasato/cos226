@@ -112,7 +112,7 @@ public class Deque<Item> implements Iterable<Item> {
 
         public Item next() {
             if (curr == null) {
-                throw new ArrayIndexOutOfBoundsException("deque is empty!");
+                throw new NoSuchElementException("deque is empty!");
             }
             Item item = curr.item;
             curr = curr.next;
