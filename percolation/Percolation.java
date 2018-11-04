@@ -48,7 +48,7 @@ public class Percolation {
             if (isTopRow(trueRow)) {
                 connections.union(virtualTopNode, currNode);
             }
-            else if (isBottomRow(trueRow)) {
+            if (isBottomRow(trueRow)) {
                 connections.union(virtualBottomNode, currNode);
             }
             if (doConnectUp(trueRow, trueCol)) {
