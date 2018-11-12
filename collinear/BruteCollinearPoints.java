@@ -4,10 +4,6 @@
  *  Description:
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdOut;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -22,15 +18,27 @@ public class BruteCollinearPoints {
     public BruteCollinearPoints(Point[] points) {   // finds all line segments containing 4 points
         numSegments = 0;
         segments = new ArrayList<>();
-        Arrays.sort(points);
+        if (points == null) {
+            throw new IllegalArgumentException();
+        }
+        for (int i = 0; i < points.length; ++i) {
+            if (points[i] == null) {
+                throw new IllegalArgumentException();
+            }
+            for (int j = 0; j < points.length; ++j) {
+                if (i != j && points[i].compareTo(points[j]) == 0) {
+                    throw new IllegalArgumentException();
+                }
+            }
+        }
         for (int p = 0; p < points.length; ++p) {
             for (int q = p + 1; q < points.length; ++q) {
                 for (int r = q + 1; r < points.length; ++r) {
                     for (int s = r + 1; s < points.length; ++s) {
-                        if (points[p].slopeTo(points[q])
-                                == points[p].slopeTo(points[r])
-                                && points[p].slopeTo(points[q])
-                                == points[p].slopeTo(points[s])) {
+                        if (pointsOnLine(points[p],
+                                         points[q],
+                                         points[r],
+                                         points[s])) {
                             Point[] collinear = {
                                     points[p],
                                     points[q],
@@ -48,19 +56,27 @@ public class BruteCollinearPoints {
         }
     }
 
+    private boolean pointsOnLine(Point p, Point q, Point r, Point s) {
+        if (p.slopeTo(q) != p.slopeTo(r)) {
+            return false;
+        }
+        if (p.slopeTo(q) != p.slopeTo(s)) {
+            return false;
+        }
+        return true;
+    }
+
     public int numberOfSegments() {                 // the number of line segments
         return numSegments;
     }
 
     public LineSegment[] segments() {               // the line segments
         LineSegment[] ret = new LineSegment[numSegments];
-        for (int i = 0; i < numSegments; ++i) {
-            ret[i] = segments.get(i);
-        }
-        return ret;
+        return segments.toArray(ret);
     }
 
     public static void main(String[] args) {
+        /*
         // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
@@ -87,5 +103,6 @@ public class BruteCollinearPoints {
             segment.draw();
         }
         StdDraw.show();
+        */
     }
 }
