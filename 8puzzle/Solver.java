@@ -41,6 +41,11 @@ public class Solver {
 
         StdOut.println(initial.hamming());
         StdOut.println(initial.manhattan());
+        StdOut.println(initial.isGoal());
+        // Board twin = initial.twin();
+        for (Board b : initial.neighbors()) {
+            StdOut.println(b.isGoal());
+        }
 
         // solve the puzzle
         Solver solver = new Solver(initial);
